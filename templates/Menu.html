@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Menú</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="/" style="color: #198754"><i class="bi bi-globe"></i> PipeLines</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/scraping"> Web Scraping</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/homescraping">Home Scraping</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/parsing">Parsing and CleanUp</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/classification">Text Classification</a>
+                </li>
+
+            </ul>
+            <div class="me-3">
+                <a class=" btn btn-danger mr-3" type="submit" href="/">Menu</a>
+
+            </div>
+
+            <button class="btn btn-outline-light" type="submit" disabled><i class="bi bi-person"></i> @Billy Marles
+            </button>
+
+        </div>
+    </div>
+</nav>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Hqsi/QDuhWyJSRtaSXjTsOPcOydmWO4uX9GYK0n3g8u3rb7K1V/2hC2gUjh7xmVb" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        let currentPath = window.location.pathname;
+
+        $(".nav-link").each(function () {
+            let href = $(this).attr('href');
+            if (href === currentPath) {
+                $(this).addClass('active');
+            }
+        });
+    });
+</script>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+</html>

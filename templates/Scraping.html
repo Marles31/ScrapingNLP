@@ -1,0 +1,66 @@
+{% extends "Menu.html" %}
+{% block content %}
+
+    <div class="container mt-3 mb-2">
+        <div class="card text-center">
+            <div class="card-header text-bg-dark">
+                Web Scraping
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Data Acquisition</h5>
+                <form action="/scraping" method="post" class="mb-2">
+                    <button class="btn btn-success" value="process">Class exercise</button>
+                </form>
+                <form action="/homescraping" method="post" class="mb-2">
+                    <button class="btn btn-primary" value="process">Home exercise</button>
+                </form>
+            </div>
+            <div class="card-footer text-bg-dark">
+                Fist Step: Select an option
+            </div>
+        </div>
+    </div>
+
+    {% if classResponse or homeResponse %}
+        <div class="response container mb-2">
+            {% for data in classResponse %}
+                <div class="card">
+                    <h5 class="card-header text-bg-success">{{ data.Title }}</h5>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ data.Company }}</h5>
+                        <p class="card-text">{{ data.Location }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% for data in homeResponse %}
+                <div class="card">
+                    <h3 class="card-header text-bg-primary">{{ data.Title }}</h3>
+                    <img src="{{ data.Image }}" class="card-img-top" alt="{{ data.Title }}">
+                    <div class="card-body">
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <div class="alert alert-warning d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>
+                <strong>Select an option</strong>
+            </div>
+        </div>
+    {% endif %}
+
+    <style>
+        .response {
+            display: grid;
+            grid-template-columns: repeat(
+            auto-fill,
+            minmax(400px, 1fr)
+            );
+            gap: 16px;
+        }
+    </style>
+
+{% endblock %}
