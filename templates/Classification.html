@@ -18,31 +18,4 @@
         </div>
     </div>
 
-    {% if response %}
-        {% for data in response %}
-
-            <div class="container mb-2">
-                <div class="card">
-                    <div class="card-header text-bg-warning">
-                        <h4>{{ data.Question }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <blockquote class="blockquote mb-0">
-                            {{ data.Answer | safe }}
-                        </blockquote>
-                    </div>
-                </div>
-            </div>
-
-
-        {% endfor %}
-    {% else %}
-        <div class="alert alert-warning d-flex align-items-center" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <div>
-                <strong>Response not available:</strong> Press Execute button
-            </div>
-        </div>
-    {% endif %}
-
 {% endblock %}

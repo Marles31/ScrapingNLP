@@ -2,113 +2,93 @@ import nltk
 import requests
 import spacy
 from bs4 import BeautifulSoup
+from matplotlib import pyplot as plt
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-import seaborn as sns
 from nltk.corpus import wordnet
-from nltk.stem import PorterStemmer
-from nltk.stem import SnowballStemmer
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer, SnowballStemmer, WordNetLemmatizer
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 
 class classificationEntity:
-
     def response(self):
-
-        # 1. Tokenizar texto
         response_list = []
 
+        # 1. Tokenizar texto
         page = requests.get(
             "https://www.bbva.com/es/salud-financiera/que-son-rentas-recurrentes-y-como-afectan-a-la-salud-financiera/")
         soup = BeautifulSoup(page.content, "html.parser")
         text = soup.get_text(strip=True)
-        print(text)
 
         # Crear tokens por palabras
         tokens = word_tokenize(text, "Spanish")
         tokens = [word.lower() for word in tokens if word.isalpha()]
-        # Remover los signos de puntuación
-        print(tokens)
 
-        # Verficar frecuencia de palabras
+        # Verificar frecuencia de palabras
         freq = nltk.FreqDist(tokens)
-        for key, val in freq.items():
-            print(str(key) + ':' + str(val))
 
         # Visualizar tokens
-        sns.set()
-        freq.plot(30, cummulative=False)
+        freq.plot(30, cumulative=False)
+        plt.close()
 
         # 2. Eliminar palabras de parada
-        clean_tokens = tokens[:]
-        for token in tokens:
-            if token in stopwords.words('spanish'):
-                clean_tokens.remove(token)
-        print(clean_tokens)
+        clean_tokens = [word for word in tokens if word not in stopwords.words('spanish')]
 
         # Verificar frecuencia de palabras
         freq_clean = nltk.FreqDist(clean_tokens)
-        for key, val in freq_clean.items():
-            print(str(key) + ':' + str(val))
 
         # Visualizar tokens
-        sns.set()
         freq_clean.plot(30, cumulative=False)
+        plt.close()
 
-        # 3. Obtener sinónimos
-        synonyms = []
-        for syn in wordnet.synsets('investment'):
-            for lemma in syn.lemmas():
-                synonyms.append(lemma.name())
-        print(synonyms)
+        # 3a. Obtener sinónimos
+        synonyms = [lemma.name() for syn in wordnet.synsets('investment') for lemma in syn.lemmas()]
 
         # Reemplazar tokens sinónimos
-        for ind, sin in enumerate(synonyms):
-            clean_tokens_sin = [word.replace(synonyms[ind], 'investment')
-                                for word in clean_tokens]
+        clean_tokens_sin = [word.replace(syn, 'investment') for word in clean_tokens for syn in synonyms]
 
-        # Reemplazar tokens sinóimos manual
-        sinonimos = ['libertad', 'independencia']
+        # Recalcular frecuencia de palabras con sinónimos agregados
+        freq_clean_sin = nltk.FreqDist(clean_tokens_sin)
 
-        # Synonyms and Antonyms
-        antonyms = []
-        for syn in wordnet.synsets('good'):
-            for l in syn.lemmas():
-                if l.antonyms():
-                    antonyms.append(l.antonyms()[0].name())
-        print(antonyms)
+        # Visualizar tokens
+        freq_clean_sin.plot(30, cumulative=False)
+        plt.close()
 
-        # 4. Porter Algorithm Regressive derivation
+        # 3b. Obtener antónimos
+        antonyms = [l.antonyms()[0].name() for syn in wordnet.synsets('good') for l in syn.lemmas() if l.antonyms()]
+
+        # 4. Derivación Regresiva (Algoritmo de Porter)
         stemmer = PorterStemmer()
-        print(stemmer.stem('eating'))
 
-        # Regressive derivation in spanish texts
+        # Regresión de derivación en textos en español
         spanish_stemmer = SnowballStemmer('spanish')
-        print(spanish_stemmer.stem('trabajando'))
-        print(spanish_stemmer.stem('trabajo'))
 
         clean_tokens_sin_stems = [spanish_stemmer.stem(token) for token in clean_tokens_sin]
-        print(clean_tokens_sin_stems)
 
-        # Frequency word recalculation with added synonyms
+        # Recalcular frecuencia de palabras con sinónimos agregados
         freq_clean_sin_stems = nltk.FreqDist(clean_tokens_sin_stems)
-        for key, val in freq_clean_sin_stems.items():
-            print(str(key) + ':' + str(val))
-        # Visualise Tokens
-        freq_clean_sin_stems.plot(30, cumulative=False)
 
-        # 5. Legitimatizing words
+        # Visualizar Tokens
+        freq_clean_sin_stems.plot(30, cumulative=False)
+        plt.close()
+
+        # 5. Palabras lematizadoras
         lemmatizer = WordNetLemmatizer()
-        print(lemmatizer.lemmatize('working', pos="v"))
         nlp = spacy.blank('es')
 
-        # response_info = {
-        #     "text": text,
-        #     "tokens": tokens,
-        #     "frequency": freq.items(),
-        #     "clean_tokens": clean_tokens
-        # }
+        # Lematizar tokens tras limpieza y convertidos en sinónimos
+        clean_tokens_sin_lem = []
 
-        # response_list.append(response_info)
+        for token in nlp(' '.join(clean_tokens_sin)):
+            clean_tokens_sin_lem.append(token.text)
+
+        freq_clean_sin_lem = nltk.FreqDist(clean_tokens_sin_lem)
+
+        # Visualizar Tokens
+        freq_clean_sin_lem.plot(30, cumulative=False)
+        plt.close()
 
         return response_list
